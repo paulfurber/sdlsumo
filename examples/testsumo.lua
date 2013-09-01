@@ -8,8 +8,8 @@ if sumo['sdl'] then
     print ("Loaded SDL")
 end
 
-if sumo['ttf'] then
-    print ("Loaded SDL_ttf")
+if sumo['stt'] then
+    print ("Loaded STT")
 end
 
 if sumo['image'] then
@@ -21,34 +21,28 @@ if sumo['mixer'] then
 end
 
 local sdl=sumo['sdl']
-local ttf=sumo['ttf']
+local stt=sumo['stt']
 
 
 sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
 local screen = sdl.SDL_SetVideoMode(1024,768,sdl.SDL_SWSURFACE, 32)
 
-local font = ffi.new("TTF_Font")
-font = ttf.TTF_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
+stt.STT_Init()
+font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
 
+color = ffi.new("SDL_Color")
+color.r = 0xFF
+color.g = 0x00
+color.b = 0x00
 
-ttf.TTF_SetFontStyle(font,ttf.TTF_STYLE_NORMAL)
+text = stt.STT_RenderText_Blended(font, "Welcome to sdlsumo!", color)
+stt.STT_CloseFont(font)
 
-ttf.TTF_SetFontOutline(font, 0)
-ttf.TTF_SetFontHinting(font, ttf.TTF_HINTING_NORMAL)
-ttf.TTF_SetFontKerning(font, 1)
+sdl.SDL_UpperBlit(text, nil, screen, nil)
 
-
-
-Color = ffi.metatype("SDL_Color", {})
-color = Color(0xFF, 0x00, 0x00, 0)
-
-text = ttf.TTF_RenderText_Blended(font, "Welcome to sdlsumo!", color)
-
-
-sdl.SDL_BLit(text, 0, screen, 0)
-
-sdl.SDL_UpdateRects()
+sdl.SDL_Flip(screen)
 
 io.read("*l")
 
+stt.STT_Quit()
 sdl.SDL_Quit()

@@ -1533,6 +1533,7 @@ if ok then
    SDL_Surface* SDL_CreateRGBSurfaceFrom( void *pixels, int width, int height, int depth, int pitch,
 					  uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
 
+
    void         SDL_FreeSurface(          SDL_Surface* );
    int          SDL_SetSurfacePalette(    SDL_Surface*, SDL_Palette* palette ); 
    int          SDL_LockSurface(          SDL_Surface* );
@@ -1867,236 +1868,42 @@ end
 -- and export some MUCH simpler types to luajit
 
 
-ok = xpcall(ffi.load, load_err, 'SDL_ttf')
+ok = xpcall(ffi.load, load_err, 'stt')
 if ok then
-    local ttf  = ffi.load("SDL_ttf")
-    sdlsumo['ttf'] = ttf
-
-    --SDL_ttf-2.0 definitions
+    local stt  = ffi.load("stt")
+    sdlsumo['stt'] = stt
+    
     ffi.cdef[[
 
-enum {
-    SDL_TTF_MAJOR_VERSION	= 2,
-    SDL_TTF_MINOR_VERSION	= 0,
-    SDL_TTF_PATCHLEVEL	= 11,
-};
+typedef struct _STT_Font {
 
-const SDL_version *  TTF_Linked_Version(void);
+        uint32_t handle;
 
-enum {
- UNICODE_BOM_NATIVE	= 0xFEFF,
- UNICODE_BOM_SWAPPED	= 0xFFFE,
-};
-
-void  TTF_ByteSwappedUNICODE(int swapped);
-
-  typedef unsigned char  FT_Bool;
-  typedef signed short  FT_FWord;   /* distance in FUnits */
-  typedef unsigned short  FT_UFWord;  /* unsigned distance */
-  typedef signed char  FT_Char;
-  typedef unsigned char  FT_Byte;
-  typedef const FT_Byte*  FT_Bytes;
-//  typedef FT_UInt32  FT_Tag;
-  typedef uint32_t FT_Tag;
-  typedef char  FT_String;
-  typedef signed short  FT_Short;
-  typedef unsigned short  FT_UShort;
-  typedef signed int  FT_Int;
-  typedef unsigned int  FT_UInt;
-  typedef signed long  FT_Long;
-  typedef unsigned long  FT_ULong;
-  typedef signed short  FT_F2Dot14;
-  typedef signed long  FT_F26Dot6;
-  typedef signed long  FT_Fixed;
-  typedef int  FT_Error;
-  typedef void*  FT_Pointer;
-  typedef size_t  FT_Offset;
- // typedef ft_ptrdiff_t  FT_PtrDist;
-
-  typedef struct  FT_Bitmap_
-  {
-    int             rows;
-    int             width;
-    int             pitch;
-    unsigned char*  buffer;
-    short           num_grays;
-    char            pixel_mode;
-    char            palette_mode;
-    void*           palette;
-
-  } FT_Bitmap;
+} STT_Font;
 
 
+const SDL_version *  STT_Linked_Version(void);
+void  STT_ByteSwappedUNICODE(int swapped);
+int  STT_Init(void);
 
-  typedef struct FT_FaceRec_*  FT_Face;
+STT_Font *  STT_OpenFont(const char *file, int ptsize);
 
-
-typedef struct cached_glyph {
-	int stored;
-	FT_UInt index;
-	FT_Bitmap bitmap;
-	FT_Bitmap pixmap;
-	int minx;
-	int maxx;
-	int miny;
-	int maxy;
-	int yoffset;
-	int advance;
-	uint16_t cached;
-} c_glyph;
-
-  typedef struct  FT_Open_Args_
-  {
-    FT_UInt         flags;
-    const FT_Byte*  memory_base;
-    FT_Long         memory_size;
-    FT_String*      pathname;
-    FT_Stream       stream;
-    FT_Module       driver;
-    FT_Int          num_params;
-    FT_Parameter*   params;
-
-  } FT_Open_Args;
-
-
-struct _TTF_Font {
-	/* Freetype2 maintains all sorts of useful info itself */
-	FT_Face face;
-
-	/* We'll cache these ourselves */
-	int height;
-	int ascent;
-	int descent;
-	int lineskip;
-
-	/* The font style */
-	int face_style;
-	int style;
-	int outline;
-
-	/* Whether kerning is desired */
-	int kerning;
-
-	/* Extra width in glyph bounds for text styles */
-	int glyph_overhang;
-	float glyph_italics;
-
-	/* Information in the font for underlining */
-	int underline_offset;
-	int underline_height;
-
-	/* Cache for style-transformed glyphs */
-	c_glyph *current;
-	c_glyph cache[257]; /* 257 is a prime */
-
-	/* We are responsible for closing the font stream */
-	SDL_RWops *src;
-	int freesrc;
-	FT_Open_Args args;
-
-	/* For non-scalable formats, we must remember which font index size */
-	int font_size_family;
-	
-	/* really just flags passed into FT_Load_Glyph */
-	int hinting;
-};
-
-typedef struct _TTF_Font TTF_Font;
-
-int  TTF_Init(void);
-
-TTF_Font *  TTF_OpenFont(const char *file, int ptsize);
-TTF_Font *  TTF_OpenFontIndex(const char *file, int ptsize, long index);
-TTF_Font *  TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);
-TTF_Font *  TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
-
-enum {
- TTF_STYLE_NORMAL	= 0x00,
- TTF_STYLE_BOLD		= 0x01,
- TTF_STYLE_ITALIC	= 0x02,
- TTF_STYLE_UNDERLINE	= 0x04,
- TTF_STYLE_STRIKETHROUGH= 0x08,
-};
-
-int  TTF_GetFontStyle(const TTF_Font *font);
-void  TTF_SetFontStyle(TTF_Font *font, int style);
-int  TTF_GetFontOutline(const TTF_Font *font);
-void  TTF_SetFontOutline(TTF_Font *font, int outline);
-
-enum {
- TTF_HINTING_NORMAL    = 0,
- TTF_HINTING_LIGHT     = 1,
- TTF_HINTING_MONO      = 2,
- TTF_HINTING_NONE      = 3,
-};
-
-int  TTF_GetFontHinting(const TTF_Font *font);
-void  TTF_SetFontHinting(TTF_Font *font, int hinting);
-
-
-int  TTF_FontHeight(const TTF_Font *font);
-int  TTF_FontAscent(const TTF_Font *font);
-int  TTF_FontDescent(const TTF_Font *font);
-int  TTF_FontLineSkip(const TTF_Font *font);
-int  TTF_GetFontKerning(const TTF_Font *font);
-void  TTF_SetFontKerning(TTF_Font *font, int allowed);
-long  TTF_FontFaces(const TTF_Font *font);
-int  TTF_FontFaceIsFixedWidth(const TTF_Font *font);
-char *  TTF_FontFaceFamilyName(const TTF_Font *font);
-char *  TTF_FontFaceStyleName(const TTF_Font *font);
-int  TTF_GlyphIsProvided(const TTF_Font *font, uint16_t ch);
-int  TTF_GlyphMetrics(TTF_Font *font, uint16_t ch,
-				     int *minx, int *maxx,
-                                     int *miny, int *maxy, int *advance);
-
-int  TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h);
-int  TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h);
-int  TTF_SizeUNICODE(TTF_Font *font, const uint16_t *text, int *w, int *h);
-
-SDL_Surface *  TTF_RenderText_Solid(TTF_Font *font,
+SDL_Surface *  STT_RenderText_Solid(STT_Font *font,
 		                    const char *text, SDL_Color fg);
-SDL_Surface *  TTF_RenderUTF8_Solid(TTF_Font *font,
+
+SDL_Surface *  STT_RenderText_Blended(STT_Font *font,
 				const char *text, SDL_Color fg);
-SDL_Surface *  TTF_RenderUNICODE_Solid(TTF_Font *font,
-				const uint16_t *text, SDL_Color fg);
 
-SDL_Surface *  TTF_RenderGlyph_Solid(TTF_Font *font,
-					uint16_t ch, SDL_Color fg);
+void  STT_CloseFont(STT_Font *font);
+void  STT_Quit(void);
+int  STT_WasInit(void);
 
-SDL_Surface *  TTF_RenderText_Shaded(TTF_Font *font,
-				const char *text, SDL_Color fg, SDL_Color bg);
-SDL_Surface *  TTF_RenderUTF8_Shaded(TTF_Font *font,
-				const char *text, SDL_Color fg, SDL_Color bg);
-SDL_Surface *  TTF_RenderUNICODE_Shaded(TTF_Font *font,
-				const uint16_t *text, SDL_Color fg, SDL_Color bg);
-SDL_Surface *  TTF_RenderGlyph_Shaded(TTF_Font *font,
-				uint16_t ch, SDL_Color fg, SDL_Color bg);
-
-SDL_Surface *  TTF_RenderText_Blended(TTF_Font *font,
-				const char *text, SDL_Color fg);
-SDL_Surface *  TTF_RenderUTF8_Blended(TTF_Font *font,
-				const char *text, SDL_Color fg);
-SDL_Surface *  TTF_RenderUNICODE_Blended(TTF_Font *font,
-				const uint16_t *text, SDL_Color fg);
-
-SDL_Surface *  TTF_RenderGlyph_Blended(TTF_Font *font,
-						uint16_t ch, SDL_Color fg);
-
-void  TTF_CloseFont(TTF_Font *font);
-void  TTF_Quit(void);
-int  TTF_WasInit(void);
-int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
-
-/*
- TTF_SetError = SDL_SetError
- TTF_GetError =	SDL_GetError
-*/
 ]]
 
 -- if no joy then just mark it as nil in the sumo table
 else
-    debug_print ("Unable to load SDL_ttf\n")
-    sdlsumo['ttf'] = nil
+    debug_print ("Unable to load stt\n")
+    sdlsumo['stt'] = nil
 end
 
 -- now try SDL_Image
@@ -2266,6 +2073,7 @@ typedef enum {
 	MUS_MODPLUG
 } Mix_MusicType;
 
+// FIXME! 
 typedef struct _Mix_Music Mix_Music;
 
 int  Mix_OpenAudio(int frequency, uint16_t format, int channels,
