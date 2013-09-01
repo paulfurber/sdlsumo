@@ -32,8 +32,6 @@ typedef struct _STT_Font {
 #define  TTF_HINTING_MONO       2
 #define  TTF_HINTING_NONE       3
 
-const SDL_version *  STT_Linked_Version(void);
-void  STT_ByteSwappedUNICODE(int swapped);
 int  STT_Init(void);
 
 STT_Font *  STT_OpenFont(const char *file, int ptsize);
@@ -143,16 +141,6 @@ STT_Font *STT_Font_new()
         return font;
 }
 
-const SDL_version *  STT_Linked_Version(void)
-{
-        return SDL_Linked_Version();
-}
-
-void STT_ByteSwappedUNICODE(int swapped)
-{
-        TTF_ByteSwappedUNICODE(swapped);
-}
-
 int STT_Init(void)
 {
         return TTF_Init();
@@ -197,7 +185,6 @@ void STT_CloseFont(STT_Font *font)
         font_pool[font->handle] = NULL;
         free (font);
 }
-
 
 void STT_Quit(void)
 {

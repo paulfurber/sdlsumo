@@ -1,9 +1,11 @@
--- based on UFO by ??
+-- sdlsumo, a single file luajit binding for SDL, SDL_Mixer, SDL_Image
+-- and SDL_ttf (via a wrapper called STT)
+-- copyright Paul Furber 2013
+-- SDL bindings are from UFO by Dimiter "malkia" Stanev
 
 local ffi = require("ffi")
 
 -- table of all the SDL ffi modules
-
 local sdlsumo = {}
 
 debug = false
@@ -1861,13 +1863,6 @@ else
     assert (nil, "Unable to load SDL shared library\n")
 end
 
--- now try to load SDL_ttf
-
--- this is not going to work
--- better write a wrapper in C that includes SDL_ttf.h
--- and export some MUCH simpler types to luajit
-
-
 ok = xpcall(ffi.load, load_err, 'stt')
 if ok then
     local stt  = ffi.load("stt")
@@ -1882,8 +1877,6 @@ typedef struct _STT_Font {
 } STT_Font;
 
 
-const SDL_version *  STT_Linked_Version(void);
-void  STT_ByteSwappedUNICODE(int swapped);
 int  STT_Init(void);
 
 STT_Font *  STT_OpenFont(const char *file, int ptsize);
@@ -2021,7 +2014,7 @@ enum {
     SDL_MIXER_PATCHLEVEL        = 12,
 };
 
- const SDL_version *  Mix_Linked_Version(void);
+const SDL_version *  Mix_Linked_Version(void);
 
 typedef enum
 {

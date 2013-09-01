@@ -1,5 +1,5 @@
 # Makefile for libstt
-# Copyright 2013 Paul Furber
+# Copyright 2013 Paul Furber 
 
 # what to build and where to build it
 OUTDIR=build
