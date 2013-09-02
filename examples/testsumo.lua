@@ -28,14 +28,14 @@ sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
 local screen = sdl.SDL_SetVideoMode(1024,768,sdl.SDL_SWSURFACE, 32)
 
 stt.STT_Init()
-font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
+local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
 
-color = ffi.new("SDL_Color")
+local color = ffi.new("SDL_Color")
 color.r = 0xFF
 color.g = 0x00
 color.b = 0x00
 
-text = stt.STT_RenderText_Blended(font, "Welcome to sdlsumo!", color)
+local text = stt.STT_RenderText_Blended(font, "Welcome to sdlsumo!", color)
 stt.STT_CloseFont(font)
 
 sdl.SDL_UpperBlit(text, nil, screen, nil)
