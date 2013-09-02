@@ -16,10 +16,12 @@ dependencies are included in one shot.
 Luajit 2.0.x
 SDL-1.2.15
 
-Optional even though this is the whole bloody point of SDLSumo:
+Optional (even though this is the whole point of SDLSumo - to
+be able to use all the SDL libraries you want from Luajit):
+
 SDL_ttf-2.0.x
 SDL_mixer-1.2.15
-SDL_Image-1.2.12
+SDL_image-1.2.12
 
 ##Usage
 
@@ -95,6 +97,6 @@ Steve Donovan, author of the Penlight Lua libraries
 (http://github.com/stevedonovan/Penlight). He's a great Lua programmer 
 and he lives in my town. What are the odds? 
 
-(SDLSumo does not depend on Penlight - I just learned lots from
+(SDLSumo does not depend on Penlight - I just continue to learn lots from
 reading it and using it.)
 
