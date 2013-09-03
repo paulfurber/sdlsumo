@@ -2,7 +2,7 @@
 
 ##Rationale
 
-SDLSumo is a single file ffi binding to Luajit 2.0.x for SDL-1.2.15, SDL_Image-1.2.12, SDL_Mixer-1.2.15 and SDL_TTF-2.0.11. SDL_TTF is wrapped in a very similar API called STT (Sumo TrueType) that avoids the rabbit hole complexity of the Freetype headers. 
+SDLSumo is a single file ffi binding to Luajit 2.0.x for SDL-1.2.15, SDL_Image-1.2.12, SDL_Mixer-1.2.12 and SDL_TTF-2.0.11. SDL_TTF is wrapped in a very similar API called STT (Sumo TrueType) that avoids the rabbit hole complexity of the Freetype headers. 
 
 SDLSumo solves Luajit's limitation in that files containing ffi.cdef
 declarations may not be required more than once (otherwise redefinition errors occur). By keeping things to a single file, all
@@ -95,7 +95,7 @@ Let me know please.
 
 Dimiter "malkia" Stanev for UFO - a superb all-singing, all-dancing
 Luajit ffi library. Check it out at http://github.com/malkia/ufo
-SDLSumo's SDL bindings are pinched lock, stock and barrel from here.
+SDLSumo's SDL bindings benefited greatly from looking at this code.
 
 Steve Donovan, author of the Penlight Lua libraries
 (http://github.com/stevedonovan/Penlight). He's a great Lua programmer 
