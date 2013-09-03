@@ -1,5 +1,6 @@
-require 'pl'
-require 'pl.utils'
+--require 'pl'
+--require 'pl.utils'
+
 local ffi = require 'ffi'
 package.path = "../lua/?.lua;" .. package.path
 
@@ -23,18 +24,23 @@ end
 
 local sdl=sumo['sdl']
 local stt=sumo['stt']
+local image=sumo['image']
 
 
 sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
-local screen = sdl.SDL_SetVideoMode(1024,768, 32, sdl.SDL_SWSURFACE)
+local screen = sdl.SDL_SetVideoMode(1280, 720, 32, sdl.SDL_SWSURFACE)
+
+local bg = image.IMG_Load("bg720.png")
+sdl.SDL_UpperBlit(bg, nil, screen, nil)
+
 
 stt.STT_Init()
 local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
 
 local color = ffi.new("SDL_Color")
 color.r = 0xFF
-color.g = 0x00
-color.b = 0x00
+color.g = 0xFF
+color.b = 0xFF
 
 local text = stt.STT_RenderText_Blended(font, "Welcome to sdlsumo!", color)
 stt.STT_CloseFont(font)
@@ -44,8 +50,6 @@ sdl.SDL_UpperBlit(text, nil, screen, nil)
 sdl.SDL_Flip(screen)
 
 local event = ffi.new("SDL_Event")
-event.type = sdl.SDL_VIDEORESIZE
-sdl.SDL_PushEvent(event)
 
 while event.type ~= sdl.SDL_QUIT do
 
@@ -57,7 +61,6 @@ while event.type ~= sdl.SDL_QUIT do
                 sdl.SDL_PushEvent( event )
             end
         end
-        
     end
 end
 
