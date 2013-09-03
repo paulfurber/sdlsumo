@@ -50,9 +50,7 @@ sdl.SDL_PushEvent(event)
 while event.type ~= sdl.SDL_QUIT do
 
     if sdl.SDL_PollEvent(event) > 0 then
-        
         local sym, mod = event.key.keysym.sym, event.key.keysym.mod
-    --    utils.printf ("%d %d\n", event.type, sym)
         if event.type == sdl.SDL_KEYUP then
             if sym == sdl.SDLK_ESCAPE then
                 event.type = sdl.SDL_QUIT
