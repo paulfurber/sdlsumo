@@ -30,10 +30,13 @@ OBJNAME := $(OUTDIR)/stt.o
 
 all	: $(LIBNAME)
 
+$(OUTDIR):
+	mkdir -p $(OUTDIR)
+
 $(LIBNAME) : $(OBJNAME) $(OUTDIR)
 	$(LD) $(LDFLAGS) -o $@ $< $(LIBS)
 
-$(OBJNAME) : stt.c 
+$(OBJNAME) : stt.c $(OUTDIR)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 install	: $(LIBNAME)
