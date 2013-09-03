@@ -8,16 +8,16 @@ local ffi = require("ffi")
 -- table of all the SDL ffi modules
 local sdlsumo = {}
 
-debug = false
+local debug = false
 
-function debug_print(msg)
+local function debug_print(msg)
     if debug then
         print (msg)
     end    
 end
 
 -- error placeholder function for xpcall
-function load_err()
+local function load_err()
 end
 
 -- if SDL loads, add it to sdlsumo and include its definitions
