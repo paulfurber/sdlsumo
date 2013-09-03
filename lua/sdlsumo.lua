@@ -1,7 +1,6 @@
 -- sdlsumo, a single file luajit binding for SDL, SDL_Mixer, SDL_Image
 -- and SDL_ttf (via a wrapper called STT)
 -- copyright Paul Furber 2013
--- SDL bindings are from UFO by Dimiter "malkia" Stanev
 
 local ffi = require("ffi")
 
@@ -79,7 +78,7 @@ typedef struct SDL_RWops {
 	union {
 	    struct {
 		int autoclose;
-	 	void *fp;
+	 	void *fp;         // was FILE *fp
 	    } stdio;
 	    struct {
 		uint8_t *base;
@@ -424,11 +423,8 @@ typedef enum {
 	SDLK_WORLD_92		= 252,
 	SDLK_WORLD_93		= 253,
 	SDLK_WORLD_94		= 254,
-	SDLK_WORLD_95		= 255,		/* 0xFF */
-        /*@}*/
+	SDLK_WORLD_95		= 255,		
 
-	/** @name Numeric keypad */
-        /*@{*/
 	SDLK_KP0		= 256,
 	SDLK_KP1		= 257,
 	SDLK_KP2		= 258,
@@ -446,10 +442,7 @@ typedef enum {
 	SDLK_KP_PLUS		= 270,
 	SDLK_KP_ENTER		= 271,
 	SDLK_KP_EQUALS		= 272,
-        /*@}*/
 
-	/** @name Arrows + Home/End pad */
-        /*@{*/
 	SDLK_UP			= 273,
 	SDLK_DOWN		= 274,
 	SDLK_RIGHT		= 275,
@@ -459,10 +452,8 @@ typedef enum {
 	SDLK_END		= 279,
 	SDLK_PAGEUP		= 280,
 	SDLK_PAGEDOWN		= 281,
-        /*@}*/
 
-	/** @name Function keys */
-        /*@{*/
+
 	SDLK_F1			= 282,
 	SDLK_F2			= 283,
 	SDLK_F3			= 284,
@@ -478,10 +469,8 @@ typedef enum {
 	SDLK_F13		= 294,
 	SDLK_F14		= 295,
 	SDLK_F15		= 296,
-        /*@}*/
 
-	/** @name Key state modifier keys */
-        /*@{*/
+
 	SDLK_NUMLOCK		= 300,
 	SDLK_CAPSLOCK		= 301,
 	SDLK_SCROLLOCK		= 302,
@@ -493,30 +482,25 @@ typedef enum {
 	SDLK_LALT		= 308,
 	SDLK_RMETA		= 309,
 	SDLK_LMETA		= 310,
-	SDLK_LSUPER		= 311,		/**< Left "Windows" key */
-	SDLK_RSUPER		= 312,		/**< Right "Windows" key */
-	SDLK_MODE		= 313,		/**< "Alt Gr" key */
-	SDLK_COMPOSE		= 314,		/**< Multi-key compose key */
-        /*@}*/
+	SDLK_LSUPER		= 311,
+	SDLK_RSUPER		= 312,
+	SDLK_MODE		= 313,
+	SDLK_COMPOSE		= 314,
 
-	/** @name Miscellaneous function keys */
-        /*@{*/
 	SDLK_HELP		= 315,
 	SDLK_PRINT		= 316,
 	SDLK_SYSREQ		= 317,
 	SDLK_BREAK		= 318,
 	SDLK_MENU		= 319,
-	SDLK_POWER		= 320,		/**< Power Macintosh power key */
-	SDLK_EURO		= 321,		/**< Some european keyboards */
-	SDLK_UNDO		= 322,		/**< Atari keyboard has Undo */
-        /*@}*/
+	SDLK_POWER		= 320,
+	SDLK_EURO		= 321,
+	SDLK_UNDO		= 322,
 
-	/* Add any other keys here */
 
 	SDLK_LAST
 } SDLKey;
 
-/** Enumeration of valid key mods (possibly OR'd together) */
+
 typedef enum {
 	KMOD_NONE  = 0x0000,
 	KMOD_LSHIFT= 0x0001,
@@ -540,10 +524,10 @@ typedef enum {
 // SDL_keyboard.h
 
 typedef struct SDL_keysym {
-	uint8_t scancode;			/**< hardware specific scancode */
-	SDLKey sym;			/**< SDL virtual keysym */
-	SDLMod mod;			/**< current key modifiers */
-	uint16_t unicode;			/**< translated character */
+	uint8_t scancode;	
+	SDLKey sym;		
+	SDLMod mod;		
+	uint16_t unicode;	
 } SDL_keysym;
 
 enum {
@@ -1003,54 +987,35 @@ int SDL_SetPalette(SDL_Surface *surface, int flags,
 				   SDL_Color *colors, int firstcolor,
 				   int ncolors);
 
-uint32_t SDL_MapRGB
-(const SDL_PixelFormat * const format,
- const uint8_t r, const uint8_t g, const uint8_t b);
-uint32_t SDL_MapRGBA
-(const SDL_PixelFormat * const format,
- const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a);
-void SDL_GetRGB(uint32_t pixel,
-				const SDL_PixelFormat * const fmt,
-				uint8_t *r, uint8_t *g, uint8_t *b);
-void SDL_GetRGBA(uint32_t pixel,
-				const SDL_PixelFormat * const fmt,
-				uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a);
+uint32_t SDL_MapRGB (const SDL_PixelFormat * const format, const uint8_t r, const uint8_t g, const uint8_t b);
+uint32_t SDL_MapRGBA (const SDL_PixelFormat * const format,  const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a);
+void SDL_GetRGB(uint32_t pixel,	const SDL_PixelFormat * const fmt, uint8_t *r, uint8_t *g, uint8_t *b);
+void SDL_GetRGBA(uint32_t pixel, const SDL_PixelFormat * const fmt, uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a);
 
 /*
 #define SDL_AllocSurface    SDL_CreateRGBSurface
 */
 
-SDL_Surface * SDL_CreateRGBSurface
-			(uint32_t flags, int width, int height, int depth, 
+SDL_Surface * SDL_CreateRGBSurface (uint32_t flags, int width, int height, int depth, 
 			uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask);
-SDL_Surface * SDL_CreateRGBSurfaceFrom(void *pixels,
-			int width, int height, int depth, int pitch,
+SDL_Surface * SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int depth, int pitch,
 			uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask);
 void SDL_FreeSurface(SDL_Surface *surface);
 int SDL_LockSurface(SDL_Surface *surface);
 void SDL_UnlockSurface(SDL_Surface *surface);
 SDL_Surface * SDL_LoadBMP_RW(SDL_RWops *src, int freesrc);
-int SDL_SaveBMP_RW
-		(SDL_Surface *surface, SDL_RWops *dst, int freedst);
+int SDL_SaveBMP_RW (SDL_Surface *surface, SDL_RWops *dst, int freedst);
 
-
-int SDL_SetColorKey
-			(SDL_Surface *surface, uint32_t flag, uint32_t key);
+int SDL_SetColorKey (SDL_Surface *surface, uint32_t flag, uint32_t key);
 
 int SDL_SetAlpha(SDL_Surface *surface, uint32_t flag, uint8_t alpha);
 SDL_bool SDL_SetClipRect(SDL_Surface *surface, const SDL_Rect *rect);
 void SDL_GetClipRect(SDL_Surface *surface, SDL_Rect *rect);
-SDL_Surface * SDL_ConvertSurface
-			(SDL_Surface *src, SDL_PixelFormat *fmt, uint32_t flags);
+SDL_Surface * SDL_ConvertSurface(SDL_Surface *src, SDL_PixelFormat *fmt, uint32_t flags);
 
-int SDL_UpperBlit
-			(SDL_Surface *src, SDL_Rect *srcrect,
-			 SDL_Surface *dst, SDL_Rect *dstrect);
-int SDL_LowerBlit
-			(SDL_Surface *src, SDL_Rect *srcrect,
-			 SDL_Surface *dst, SDL_Rect *dstrect);
-int SDL_FillRect
-		(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color);
+int SDL_UpperBlit(SDL_Surface *src, SDL_Rect *srcrect,	 SDL_Surface *dst, SDL_Rect *dstrect);
+int SDL_LowerBlit(SDL_Surface *src, SDL_Rect *srcrect,	 SDL_Surface *dst, SDL_Rect *dstrect);
+int SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color);
 
 SDL_Surface * SDL_DisplayFormat(SDL_Surface *surface);
 SDL_Surface * SDL_DisplayFormatAlpha(SDL_Surface *surface);
@@ -1085,8 +1050,7 @@ typedef enum {
 
 SDL_GrabMode SDL_WM_GrabInput(SDL_GrabMode mode);
 
-
-   ]]
+]]
 
 else
     -- bail here if no SDL since it's fatal
@@ -1109,17 +1073,15 @@ typedef struct _STT_Font {
 
 int  STT_Init(void);
 
-STT_Font *  STT_OpenFont(const char *file, int ptsize);
+STT_Font * STT_OpenFont(const char *file, int ptsize);
 
-SDL_Surface *  STT_RenderText_Solid(STT_Font *font,
-		                    const char *text, SDL_Color fg);
+SDL_Surface * STT_RenderText_Solid(STT_Font *font, const char *text, SDL_Color fg);
 
-SDL_Surface *  STT_RenderText_Blended(STT_Font *font,
-				const char *text, SDL_Color fg);
+SDL_Surface * STT_RenderText_Blended(STT_Font *font, const char *text, SDL_Color fg);
 
-void  STT_CloseFont(STT_Font *font);
-void  STT_Quit(void);
-int  STT_WasInit(void);
+void STT_CloseFont(STT_Font *font);
+void STT_Quit(void);
+int STT_WasInit(void);
 
 ]]
 
@@ -1139,67 +1101,62 @@ if ok then
     ffi.cdef[[
 
 enum {
- SDL_IMAGE_MAJOR_VERSION	= 1,
- SDL_IMAGE_MINOR_VERSION	= 2,
- SDL_IMAGE_PATCHLEVEL	        = 12,
+        SDL_IMAGE_MAJOR_VERSION	= 1,
+        SDL_IMAGE_MINOR_VERSION	= 2,
+        SDL_IMAGE_PATCHLEVEL	        = 12,
 };
 
 const SDL_version *  IMG_Linked_Version(void);
 
 typedef enum
 {
-    IMG_INIT_JPG = 0x00000001,
-    IMG_INIT_PNG = 0x00000002,
-    IMG_INIT_TIF = 0x00000004,
-    IMG_INIT_WEBP = 0x00000008,
+        IMG_INIT_JPG = 0x00000001,
+        IMG_INIT_PNG = 0x00000002,
+        IMG_INIT_TIF = 0x00000004,
+        IMG_INIT_WEBP = 0x00000008,
 } IMG_InitFlags;
 
- int  IMG_Init(int flags);
- void  IMG_Quit(void);
+int IMG_Init(int flags);
+void IMG_Quit(void);
 
- SDL_Surface *  IMG_LoadTyped_RW(SDL_RWops *src, int freesrc, char *type);
- SDL_Surface *  IMG_Load(const char *file);
- SDL_Surface *  IMG_Load_RW(SDL_RWops *src, int freesrc);
+SDL_Surface * IMG_LoadTyped_RW(SDL_RWops *src, int freesrc, char *type);
+SDL_Surface * IMG_Load(const char *file);
+SDL_Surface * IMG_Load_RW(SDL_RWops *src, int freesrc);
 
- int  IMG_InvertAlpha(int on);
+int IMG_InvertAlpha(int on);
 
- int  IMG_isICO(SDL_RWops *src);
- int  IMG_isCUR(SDL_RWops *src);
- int  IMG_isBMP(SDL_RWops *src);
- int  IMG_isGIF(SDL_RWops *src);
- int  IMG_isJPG(SDL_RWops *src);
- int  IMG_isLBM(SDL_RWops *src);
- int  IMG_isPCX(SDL_RWops *src);
- int  IMG_isPNG(SDL_RWops *src);
- int  IMG_isPNM(SDL_RWops *src);
- int  IMG_isTIF(SDL_RWops *src);
- int  IMG_isXCF(SDL_RWops *src);
- int  IMG_isXPM(SDL_RWops *src);
- int  IMG_isXV(SDL_RWops *src);
- int  IMG_isWEBP(SDL_RWops *src);
+int IMG_isICO(SDL_RWops *src);
+int IMG_isCUR(SDL_RWops *src);
+int IMG_isBMP(SDL_RWops *src);
+int IMG_isGIF(SDL_RWops *src);
+int IMG_isJPG(SDL_RWops *src);
+int IMG_isLBM(SDL_RWops *src);
+int IMG_isPCX(SDL_RWops *src);
+int IMG_isPNG(SDL_RWops *src);
+int IMG_isPNM(SDL_RWops *src);
+int IMG_isTIF(SDL_RWops *src);
+int IMG_isXCF(SDL_RWops *src);
+int IMG_isXPM(SDL_RWops *src);
+int IMG_isXV(SDL_RWops *src);
+int IMG_isWEBP(SDL_RWops *src);
 
- SDL_Surface *  IMG_LoadICO_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadCUR_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadBMP_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadGIF_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadJPG_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadLBM_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadPCX_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadPNG_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadPNM_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadTGA_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadTIF_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadXCF_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadXPM_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadXV_RW(SDL_RWops *src);
- SDL_Surface *  IMG_LoadWEBP_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadICO_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadCUR_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadBMP_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadGIF_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadJPG_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadLBM_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadPCX_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadPNG_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadPNM_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadTGA_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadTIF_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadXCF_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadXPM_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadXV_RW(SDL_RWops *src);
+SDL_Surface * IMG_LoadWEBP_RW(SDL_RWops *src);
 
- SDL_Surface *  IMG_ReadXPMFromArray(char **xpm);
-
-/* We'll use SDL for reporting errors 
-#define IMG_SetError	SDL_SetError
-#define IMG_GetError	SDL_GetError
-*/
+SDL_Surface * IMG_ReadXPMFromArray(char **xpm);
 
 ]]
 
@@ -1219,8 +1176,6 @@ if ok then
 
 ffi.cdef[[
 
-             /* from SDL_audio */
-
 char * SDL_AudioDriverName(char *namebuf, int maxlen);
 
 enum {
@@ -1229,7 +1184,7 @@ enum {
     SDL_MIXER_PATCHLEVEL        = 12,
 };
 
-const SDL_version *  Mix_Linked_Version(void);
+const SDL_version * Mix_Linked_Version(void);
 
 typedef enum
 {
@@ -1241,8 +1196,8 @@ typedef enum
     
 } MIX_InitFlags;
 
-int  Mix_Init(int flags);
-void  Mix_Quit(void);
+int Mix_Init(int flags);
+void Mix_Quit(void);
 
 enum {
     MIX_CHANNELS	= 8,
@@ -1284,47 +1239,45 @@ typedef enum {
 // FIXME! 
 typedef struct _Mix_Music Mix_Music;
 
-int  Mix_OpenAudio(int frequency, uint16_t format, int channels,
+int Mix_OpenAudio(int frequency, uint16_t format, int channels,
 							int chunksize);
 
-int  Mix_AllocateChannels(int numchans);
+int Mix_AllocateChannels(int numchans);
 
-int  Mix_QuerySpec(int *frequency,uint16_t *format,int *channels);
+int Mix_QuerySpec(int *frequency,uint16_t *format,int *channels);
 
-Mix_Chunk *  Mix_LoadWAV_RW(SDL_RWops *src, int freesrc);
+Mix_Chunk * Mix_LoadWAV_RW(SDL_RWops *src, int freesrc);
 
 /*
 #define Mix_LoadWAV(file)	Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1)
 */
 
-Mix_Music *  Mix_LoadMUS(const char *file);
+Mix_Music * Mix_LoadMUS(const char *file);
 
-Mix_Music *  Mix_LoadMUS_RW(SDL_RWops *rw);
-Mix_Music *  Mix_LoadMUSType_RW(SDL_RWops *rw, Mix_MusicType type, int freesrc);
+Mix_Music * Mix_LoadMUS_RW(SDL_RWops *rw);
+Mix_Music * Mix_LoadMUSType_RW(SDL_RWops *rw, Mix_MusicType type, int freesrc);
 
-Mix_Chunk *  Mix_QuickLoad_WAV(uint8_t *mem);
-Mix_Chunk *  Mix_QuickLoad_RAW(uint8_t *mem, uint32_t len);
+Mix_Chunk * Mix_QuickLoad_WAV(uint8_t *mem);
+Mix_Chunk * Mix_QuickLoad_RAW(uint8_t *mem, uint32_t len);
 
-void  Mix_FreeChunk(Mix_Chunk *chunk);
-void  Mix_FreeMusic(Mix_Music *music);
+void Mix_FreeChunk(Mix_Chunk *chunk);
+void Mix_FreeMusic(Mix_Music *music);
 
-int  Mix_GetNumChunkDecoders(void);
-const char *  Mix_GetChunkDecoder(int index);
-int  Mix_GetNumMusicDecoders(void);
-const char *  Mix_GetMusicDecoder(int index);
+int Mix_GetNumChunkDecoders(void);
+const char * Mix_GetChunkDecoder(int index);
+int Mix_GetNumMusicDecoders(void);
+const char * Mix_GetMusicDecoder(int index);
 
-Mix_MusicType  Mix_GetMusicType(const Mix_Music *music);
+Mix_MusicType Mix_GetMusicType(const Mix_Music *music);
 
-void  Mix_SetPostMix(void (*mix_func)
-                             (void *udata, uint8_t *stream, int len), void *arg);
+void Mix_SetPostMix(void (*mix_func)(void *udata, uint8_t *stream, int len), void *arg);
 
-void  Mix_HookMusic(void (*mix_func)
-                          (void *udata, uint8_t *stream, int len), void *arg);
+void Mix_HookMusic(void (*mix_func) (void *udata, uint8_t *stream, int len), void *arg);
 
-void  Mix_HookMusicFinished(void (*music_finished)(void));
+void Mix_HookMusicFinished(void (*music_finished)(void));
 
-void *  Mix_GetMusicHookData(void);
-void  Mix_ChannelFinished(void (*channel_finished)(int channel));
+void * Mix_GetMusicHookData(void);
+void Mix_ChannelFinished(void (*channel_finished)(int channel));
 
 
 enum {
@@ -1335,87 +1288,86 @@ typedef void (*Mix_EffectFunc_t)(int chan, void *stream, int len, void *udata);
 typedef void (*Mix_EffectDone_t)(int chan, void *udata);
 
 
-int  Mix_RegisterEffect(int chan, Mix_EffectFunc_t f,
-					Mix_EffectDone_t d, void *arg);
+int Mix_RegisterEffect(int chan, Mix_EffectFunc_t f, Mix_EffectDone_t d, void *arg);
 
-int  Mix_UnregisterEffect(int channel, Mix_EffectFunc_t f);
-int  Mix_UnregisterAllEffects(int channel);
+int Mix_UnregisterEffect(int channel, Mix_EffectFunc_t f);
+int Mix_UnregisterAllEffects(int channel);
 
 /*
 #define MIX_EFFECTSMAXSPEED  "MIX_EFFECTSMAXSPEED"
 */
 
-int  Mix_SetPanning(int channel, uint8_t left, uint8_t right);
-int  Mix_SetPosition(int channel, int16_t angle, uint8_t distance);
-int  Mix_SetDistance(int channel, uint8_t distance);
-int  Mix_SetReverseStereo(int channel, int flip);
+int Mix_SetPanning(int channel, uint8_t left, uint8_t right);
+int Mix_SetPosition(int channel, int16_t angle, uint8_t distance);
+int Mix_SetDistance(int channel, uint8_t distance);
+int Mix_SetReverseStereo(int channel, int flip);
 
-int  Mix_ReserveChannels(int num);
-int  Mix_GroupChannel(int which, int tag);
-int  Mix_GroupChannels(int from, int to, int tag);
-int  Mix_GroupAvailable(int tag);
-int  Mix_GroupCount(int tag);
-int  Mix_GroupOldest(int tag);
-int  Mix_GroupNewer(int tag);
+int Mix_ReserveChannels(int num);
+int Mix_GroupChannel(int which, int tag);
+int Mix_GroupChannels(int from, int to, int tag);
+int Mix_GroupAvailable(int tag);
+int Mix_GroupCount(int tag);
+int Mix_GroupOldest(int tag);
+int Mix_GroupNewer(int tag);
 
 /*
 #define Mix_PlayChannel(channel,chunk,loops) Mix_PlayChannelTimed(channel,chunk,loops,-1)
 */
 
-int  Mix_PlayChannelTimed(int channel, Mix_Chunk *chunk, int loops, int ticks);
-int  Mix_PlayMusic(Mix_Music *music, int loops);
+int Mix_PlayChannelTimed(int channel, Mix_Chunk *chunk, int loops, int ticks);
+int Mix_PlayMusic(Mix_Music *music, int loops);
 
-int  Mix_FadeInMusic(Mix_Music *music, int loops, int ms);
-int  Mix_FadeInMusicPos(Mix_Music *music, int loops, int ms, double position);
+int Mix_FadeInMusic(Mix_Music *music, int loops, int ms);
+int Mix_FadeInMusicPos(Mix_Music *music, int loops, int ms, double position);
 
 /* 
 #define Mix_FadeInChannel(channel,chunk,loops,ms) Mix_FadeInChannelTimed(channel,chunk,loops,ms,-1)
 */
 
-int  Mix_FadeInChannelTimed(int channel, Mix_Chunk *chunk, int loops, int ms, int ticks);
+int Mix_FadeInChannelTimed(int channel, Mix_Chunk *chunk, int loops, int ms, int ticks);
 
-int  Mix_Volume(int channel, int volume);
-int  Mix_VolumeChunk(Mix_Chunk *chunk, int volume);
-int  Mix_VolumeMusic(int volume);
+int Mix_Volume(int channel, int volume);
+int Mix_VolumeChunk(Mix_Chunk *chunk, int volume);
+int Mix_VolumeMusic(int volume);
 
-int  Mix_HaltChannel(int channel);
-int  Mix_HaltGroup(int tag);
-int  Mix_HaltMusic(void);
+int Mix_HaltChannel(int channel);
+int Mix_HaltGroup(int tag);
+int Mix_HaltMusic(void);
 
-int  Mix_ExpireChannel(int channel, int ticks);
+int Mix_ExpireChannel(int channel, int ticks);
 
-int  Mix_FadeOutChannel(int which, int ms);
-int  Mix_FadeOutGroup(int tag, int ms);
-int  Mix_FadeOutMusic(int ms);
+int Mix_FadeOutChannel(int which, int ms);
+int Mix_FadeOutGroup(int tag, int ms);
+int Mix_FadeOutMusic(int ms);
 
-Mix_Fading  Mix_FadingMusic(void);
-Mix_Fading  Mix_FadingChannel(int which);
+Mix_Fading Mix_FadingMusic(void);
+Mix_Fading Mix_FadingChannel(int which);
 
-void  Mix_Pause(int channel);
-void  Mix_Resume(int channel);
-int  Mix_Paused(int channel);
+void Mix_Pause(int channel);
+void Mix_Resume(int channel);
+int Mix_Paused(int channel);
 
-void  Mix_PauseMusic(void);
-void  Mix_ResumeMusic(void);
-void  Mix_RewindMusic(void);
-int  Mix_PausedMusic(void);
+void Mix_PauseMusic(void);
+void Mix_ResumeMusic(void);
+void Mix_RewindMusic(void);
+int Mix_PausedMusic(void);
 
-int  Mix_SetMusicPosition(double position);
+int Mix_SetMusicPosition(double position);
 
-int  Mix_Playing(int channel);
-int  Mix_PlayingMusic(void);
+int Mix_Playing(int channel);
+int Mix_PlayingMusic(void);
 
-int  Mix_SetMusicCMD(const char *command);
+int Mix_SetMusicCMD(const char *command);
 
-int  Mix_SetSynchroValue(int value);
-int  Mix_GetSynchroValue(void);
+int Mix_SetSynchroValue(int value);
+int Mix_GetSynchroValue(void);
 
-int  Mix_SetSoundFonts(const char *paths);
+int Mix_SetSoundFonts(const char *paths);
 const char*  Mix_GetSoundFonts(void);
-int  Mix_EachSoundFont(int (*function)(const char*, void*), void *data);
+int Mix_EachSoundFont(int (*function)(const char*, void*), void *data);
 Mix_Chunk *  Mix_GetChunk(int channel);
 
-void  Mix_CloseAudio(void);
+void Mix_CloseAudio(void);
 
 /* We will use SDL for reporting errors
 #define Mix_SetError	SDL_SetError
