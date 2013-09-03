@@ -1,4 +1,5 @@
 require 'pl'
+require 'pl.utils'
 local ffi = require 'ffi'
 package.path = "../lua/?.lua;" .. package.path
 
@@ -25,7 +26,7 @@ local stt=sumo['stt']
 
 
 sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
-local screen = sdl.SDL_SetVideoMode(1024,768,sdl.SDL_SWSURFACE, 32)
+local screen = sdl.SDL_SetVideoMode(1024,768, 32, sdl.SDL_SWSURFACE)
 
 stt.STT_Init()
 local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
@@ -42,7 +43,26 @@ sdl.SDL_UpperBlit(text, nil, screen, nil)
 
 sdl.SDL_Flip(screen)
 
-io.read("*l")
+local event = ffi.new("SDL_Event")
+event.type = sdl.SDL_VIDEORESIZE
+sdl.SDL_PushEvent(event)
+
+while event.type ~= sdl.SDL_QUIT do
+
+    if sdl.SDL_PollEvent(event) > 0 then
+        
+        local sym, mod = event.key.keysym.sym, event.key.keysym.mod
+    --    utils.printf ("%d %d\n", event.type, sym)
+        if event.type == sdl.SDL_KEYUP then
+            if sym == sdl.SDLK_ESCAPE then
+                event.type = sdl.SDL_QUIT
+                sdl.SDL_PushEvent( event )
+            end
+        end
+        
+    end
+end
+
 
 stt.STT_Quit()
 sdl.SDL_Quit()
