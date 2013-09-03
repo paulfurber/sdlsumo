@@ -23,6 +23,7 @@ SDL_image-1.2.12
 
 The SDLSumo module returns a table of Luajit references to dynamic libraries indexed by name. If the library could not be loaded, the table entry will be nil. SDL itself is required obviously but no other combination of the others is required. I chose the combination of these four because it seems to be the most common and the most useful.
 
+// fixme - fixed example
     local ffi = require 'ffi'
     local sumo = require 'sdlsumo'
 
@@ -43,7 +44,7 @@ The SDLSumo module returns a table of Luajit references to dynamic libraries ind
     local stt=sumo['stt']
 
     sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
-    local screen = sdl.SDL_SetVideoMode(1024,768,sdl.SDL_SWSURFACE, 32)
+    local screen = sdl.SDL_SetVideoMode(1024,768,32, sdl.SDL_SWSURFACE, 32)
 
     stt.STT_Init()
     local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
