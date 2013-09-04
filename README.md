@@ -95,7 +95,7 @@ impossible: the TTF_Font structure includes members of Freetype2 types which the
 Instead, an STT_Font is a simple structure containing an integer handle that indexes a back end array of TTF_Fonts. Creating a font merely finds the next available free handle, allocates a TTF_Font and passes any subsequent calls to the TTF_ code behind the scenes transparently. 
 
 STT_fonts are NOT garbage collected - you must free them explicitly
-with STT_CloseFont and the Luajit call ffi.new("STT_Font") is useless. Create a new font with STT_OpenFont or its variants and set all parameters as usual.
+with STT_CloseFont and unfortunately the Luajit call ffi.new("STT_Font") is useless. Create a new font with STT_OpenFont or its variants and set all parameters as usual.
 
 I hope that this is a small price to pay for having convenient working Truetype fonts in your Luajit + SDL code.
 
