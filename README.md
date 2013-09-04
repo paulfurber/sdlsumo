@@ -11,7 +11,7 @@ dependencies are included in one shot.
 ##Requirements
 Luajit 2.0.x
 SDL-1.2.15
-gcc to build the libstt library
+gcc and make to build the libstt library
 
 Optional (even though this is the whole point of SDLSumo - to be able to use all the SDL libraries you want from Luajit):
 
@@ -68,7 +68,7 @@ The SDLSumo module returns a table of Luajit references to dynamic libraries ind
 
 ##Sumo TrueType
 STT's API is identical to SDL_ttf. You should be able to find and replace TTF_ with STT_ and have it work identically as long as you access all of the font functionality in your existing code through the API and don't mess with the structure members directly. I tried including the original SDL_ttf API directly into SDLSumo but found it
-impossible: the TTF_Font structure includes members of Freetype2 types which themselves include members of other types each of which include more types, seemingly ad infinitum. After something like eight levels of increasing inclusion and indirection in the ffi.cdef statement, I gave up. 
+impossible: the TTF_Font structure includes members of Freetype2 types which themselves include members of other types each of which include more types, seemingly ad infinitum. After something like eight levels of increasing inclusion and indirection in the ffi.cdef statement, I gave up. Maybe one day I'll try again. 
 
 Instead, an STT_Font is a simple structure containing an integer handle that indexes a back end array of TTF_Fonts. Creating a font merely finds the next available free handle, allocates a TTF_Font and passes any subsequent calls to the TTF_ code behind the scenes transparently. 
 
