@@ -23,36 +23,45 @@ SDL_image-1.2.12
 
 The SDLSumo module returns a table of Luajit references to dynamic libraries indexed by name. If the library could not be loaded, the table entry will be nil. SDL itself is required obviously but no other combination of the others is required. I chose the combination of these four because it seems to be the most common and the most useful.
 
-// fixme - fixed example
     local ffi = require 'ffi'
+    package.path = "../lua/?.lua;" .. package.path
+
     local sumo = require 'sdlsumo'
 
     if sumo['sdl'] then
-       print ("Loaded SDL")
+        print ("Loaded SDL")
     end
+
     if sumo['stt'] then
         print ("Loaded STT")
     end
+
     if sumo['image'] then
         print ("Loaded SDL_image")
     end
+
     if sumo['mixer'] then
         print ("Loaded SDL_mixer")
     end
 
     local sdl=sumo['sdl']
     local stt=sumo['stt']
+    local image=sumo['image']
+
 
     sdl.SDL_Init(sdl.SDL_INIT_VIDEO)
-    local screen = sdl.SDL_SetVideoMode(1024,768,32, sdl.SDL_SWSURFACE, 32)
+    local screen = sdl.SDL_SetVideoMode(1280,720,32,sdl.SDL_SWSURFACE)
+
+    local bg = image.IMG_Load("image.png")
+    sdl.SDL_UpperBlit(bg, nil, screen, nil)
 
     stt.STT_Init()
-    local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", 48)
+    local font = stt.STT_OpenFont("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf",48)
 
     local color = ffi.new("SDL_Color")
     color.r = 0xFF
-    color.g = 0x00
-    color.b = 0x00
+    color.g = 0xFF
+    color.b = 0xFF
 
     local text = stt.STT_RenderText_Blended(font, "Welcome to sdlsumo!", color)
     stt.STT_CloseFont(font)
@@ -61,10 +70,23 @@ The SDLSumo module returns a table of Luajit references to dynamic libraries ind
 
     sdl.SDL_Flip(screen)
 
-    io.read("*l")
+    local event = ffi.new("SDL_Event")
 
-    stt.STT_Quit()
-    sdl.SDL_Quit()
+    while event.type ~= sdl.SDL_QUIT do
+
+      if sdl.SDL_PollEvent(event) > 0 then
+          local sym, mod = event.key.keysym.sym, event.key.keysym.mod
+          if event.type == sdl.SDL_KEYUP then
+             if sym == sdl.SDLK_ESCAPE then
+                event.type = sdl.SDL_QUIT
+                sdl.SDL_PushEvent( event )
+            end
+          end
+      end
+    end
+
+stt.STT_Quit()
+sdl.SDL_Quit()
 
 ##Sumo TrueType
 STT's API is identical to SDL_ttf. You should be able to find and replace TTF_ with STT_ and have it work identically as long as you access all of the font functionality in your existing code through the API and don't mess with the structure members directly. I tried including the original SDL_ttf API directly into SDLSumo but found it
@@ -100,6 +122,10 @@ SDLSumo's SDL bindings benefited greatly from looking at this code.
 
 Steve Donovan, author of the Penlight Lua libraries
 (http://github.com/stevedonovan/Penlight). He's a great Lua programmer 
-and he lives in my town. What are the odds? (SDLSumo does not depend on Penlight - I just continue to learn lots from reading it and using it.)
+and he lives in my town. What are the odds? (SDLSumo does NOT depend on Penlight - I just continue to learn lots from reading it and using it in my other projects)
 
 Mike Pall for Luajit, my new favourite language.
+
+##License
+
+All SDL code that I've used is under the LGPL 2.0 so SDLSumo is too. It's very friendly - feel free to use this in libre, open source or closed source software - but if you distribute this library, then any changes (only changes mind) MUST be made available to your recipients and myself in human readable source form. The LGPL is reproduced in this directory. Read it and understand it please.
