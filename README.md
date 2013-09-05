@@ -1,8 +1,8 @@
 #SDLSumo
 
-##Rationale
+##Raison d'etre
 
-SDLSumo is a single file ffi binding to Luajit 2.0.x for SDL-1.2.15, SDL_Image-1.2.12, SDL_Mixer-1.2.12 and SDL_TTF-2.0.11. SDL_TTF is wrapped in a very similar API called STT (Sumo TrueType) that avoids the rabbit hole complexity of the Freetype headers. 
+SDLSumo is a single file ffi binding to Luajit 2.0.x for SDL-1.2.15, SDL\_Image-1.2.12, SDL\_Mixer-1.2.12 and SDL\_TTF-2.0.11. SDL\_TTF is wrapped in a very similar API called STT (Sumo TrueType) that avoids the rabbit hole complexity of the Freetype headers. 
 
 SDLSumo solves Luajit's limitation in that files containing ffi.cdef
 declarations may not be required more than once (otherwise redefinition errors occur). By keeping things to a single file, all
@@ -15,7 +15,7 @@ gcc and make to build the libstt library
 
 Optional (even though this is the whole point of SDLSumo - to be able to use all the SDL libraries you want from Luajit):
 
-SDL_ttf-2.0.x
+SDL\_ttf-2.0.x
 SDL_mixer-1.2.15
 SDL_image-1.2.12
 
@@ -85,31 +85,31 @@ The SDLSumo module returns a table of Luajit references to dynamic libraries ind
       end
     end
 
-stt.STT_Quit()
-sdl.SDL_Quit()
+    stt.STT_Quit()
+    sdl.SDL_Quit()
 
 ##Sumo TrueType
-STT's API is identical to SDL_ttf. You should be able to find and replace TTF_ with STT_ and have it work identically as long as you access all of the font functionality in your existing code through the API and don't mess with the structure members directly. I tried including the original SDL_ttf API directly into SDLSumo but found it
+STT's API is identical to SDL\_ttf. You should be able to find and replace TTF\_ with STT\_ and have it work identically as long as you access all of the font functionality in your existing code through the API and don't mess with the structure members directly. I tried including the original SDL\_ttf API directly into SDLSumo but found it
 impossible: the TTF_Font structure includes members of Freetype2 types which themselves include members of other types each of which include more types, seemingly ad infinitum. After something like eight levels of increasing inclusion and indirection in the ffi.cdef statement, I gave up. Maybe one day I'll try again. 
 
-Instead, an STT_Font is a simple structure containing an integer handle that indexes a back end array of TTF_Fonts. Creating a font merely finds the next available free handle, allocates a TTF_Font and passes any subsequent calls to the TTF_ code behind the scenes transparently. 
+Instead, an STT\_Font is a simple structure containing an integer handle that indexes a back end array of TTF\_Fonts. Creating a font merely finds the next available free handle, allocates a TTF\_Font and passes any subsequent calls to the TTF\_ code behind the scenes transparently. 
 
-STT_fonts are NOT garbage collected - you must free them explicitly
-with STT_CloseFont and unfortunately the Luajit call ffi.new("STT_Font") is useless. Create a new font with STT_OpenFont or its variants and set all parameters as usual.
+STT\_fonts are NOT garbage collected - you must free them explicitly
+with STT\_CloseFont and unfortunately the Luajit call ffi.new("STT\_Font") is useless. Create a new font with STT\_OpenFont or its variants.
 
 I hope that this is a small price to pay for having convenient working Truetype fonts in your Luajit + SDL code.
 
 ##Installation
 
     cd libstt
-    # Adjust the makefile as necessary
+    # Adjust the Makefile as necessary
     sudo make install
     cd ../lua
     cp sdlsumo.lua /your/lua5.1/module/path
 
 ##Issues
 
-STT is unfinished. SDL_Mixer is untested. Coming soon.
+STT is unfinished - only opening and rendering blended fonts are supported at the moment. SDL_Mixer is untested. I'm on it.
 
 I'm a beginner at Lua - there could well be hacks and bad practices. 
 Let me know please.
@@ -128,4 +128,4 @@ Mike Pall for Luajit, my new favourite language.
 
 ##License
 
-All SDL code that I've used is under the LGPL 2.0 so SDLSumo is too. It's very friendly - feel free to use this in libre, open source or closed source software - but if you distribute this library, then any changes (only changes mind) MUST be made available to your recipients and myself in human readable source form. The LGPL is reproduced in this directory. Read it and understand it please.
+All SDL code that I've used from the headers is under the LGPL 2.0 so SDLSumo is too. It's very friendly - feel free to use this in libre, open source or closed source software - but if you distribute this library, then any changes (only changes mind) MUST be made available to your recipients and myself in human readable source form. The LGPL is reproduced in this directory. Read it and understand it please.
