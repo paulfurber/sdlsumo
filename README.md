@@ -109,7 +109,7 @@ I hope that this is a small price to pay for having convenient working Truetype 
 
 ##Issues
 
-STT is unfinished - only opening and rendering blended fonts are supported at the moment. SDL_Mixer is untested. I'm on it.
+STT is unfinished - only opening and rendering blended fonts are supported at the moment. SDL\_Mixer is untested. I'm on it.
 
 I'm a beginner at Lua - there could well be hacks and bad practices. 
 Let me know please.
