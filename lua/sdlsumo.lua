@@ -1093,6 +1093,32 @@ int  STT_Init(void);
 
 STT_Font * STT_OpenFont(const char *file, int ptsize);
 
+enum {
+    TTF_STYLE_NORMAL    = 0x00,
+    TTF_STYLE_BOLD      = 0x01,
+    TTF_STYLE_ITALIC	= 0x02,
+    TTF_STYLE_UNDERLINE	= 0x04,
+    TTF_STYLE_STRIKETHROUGH = 0x08,
+};
+
+int  STT_GetFontStyle(const STT_Font *font);
+void STT_SetFontStyle(STT_Font *font, int style);
+int  STT_GetFontOutline(const STT_Font *font);
+void STT_SetFontOutline(STT_Font *font, int outline);
+
+enum {
+    TTF_HINTING_NORMAL     = 0,
+    TTF_HINTING_LIGHT      = 1,
+    TTF_HINTING_MONO       = 2,
+    TTF_HINTING_NONE       = 3,
+};
+
+int  STT_GetFontHinting(const STT_Font *font);
+void  STT_SetFontHinting(STT_Font *font, int hinting);
+
+
+int  STT_SizeText(STT_Font *font, const char *text, int *w, int *h);
+
 SDL_Surface * STT_RenderText_Solid(STT_Font *font, const char *text, SDL_Color fg);
 
 SDL_Surface * STT_RenderText_Blended(STT_Font *font, const char *text, SDL_Color fg);

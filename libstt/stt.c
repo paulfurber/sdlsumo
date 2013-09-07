@@ -43,16 +43,9 @@ typedef struct _STT_Font {
 #define  UNICODE_BOM_SWAPPED	0xFFFE
 
 
-#define  TTF_STYLE_NORMAL	0x00
-#define  TTF_STYLE_BOLD		0x01
-#define  TTF_STYLE_ITALIC	0x02
-#define  TTF_STYLE_UNDERLINE	0x04
-#define  TTF_STYLE_STRIKETHROUGH 0x08
 
-#define  TTF_HINTING_NORMAL     0
-#define  TTF_HINTING_LIGHT      1
-#define  TTF_HINTING_MONO       2
-#define  TTF_HINTING_NONE       3
+
+
 
 int  STT_Init(void);
 
@@ -64,17 +57,24 @@ STT_Font *  STT_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);
 STT_Font *  STT_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 */
 
-/*
+#define  TTF_STYLE_NORMAL	0x00
+#define  TTF_STYLE_BOLD		0x01
+#define  TTF_STYLE_ITALIC	0x02
+#define  TTF_STYLE_UNDERLINE	0x04
+#define  TTF_STYLE_STRIKETHROUGH 0x08
+
 int  STT_GetFontStyle(const STT_Font *font);
 void  STT_SetFontStyle(STT_Font *font, int style);
 int  STT_GetFontOutline(const STT_Font *font);
 void  STT_SetFontOutline(STT_Font *font, int outline);
-*/
 
-/*
+#define  TTF_HINTING_NORMAL     0
+#define  TTF_HINTING_LIGHT      1
+#define  TTF_HINTING_MONO       2
+#define  TTF_HINTING_NONE       3
+
 int  STT_GetFontHinting(const STT_Font *font);
 void  STT_SetFontHinting(STT_Font *font, int hinting);
-*/
 
 /*
 int  STT_FontHeight(const STT_Font *font);
@@ -91,8 +91,11 @@ int  STT_GlyphIsProvided(const STT_Font *font, uint16_t ch);
 int  STT_GlyphMetrics(STT_Font *font, uint16_t ch,
 				     int *minx, int *maxx,
                                      int *miny, int *maxy, int *advance);
+*/
 
 int  STT_SizeText(STT_Font *font, const char *text, int *w, int *h);
+
+/*
 int  STT_SizeUTF8(STT_Font *font, const char *text, int *w, int *h);
 int  STT_SizeUNICODE(STT_Font *font, const uint16_t *text, int *w, int *h);
 
@@ -187,6 +190,47 @@ STT_Font * STT_OpenFont(const char *file, int ptsize)
         font_pool[font->handle] = ttf_font;
         return font;
 }
+
+int  STT_GetFontStyle(const STT_Font *font)
+{
+        return TTF_GetFontStyle(font_pool[font->handle]);
+}
+
+void  STT_SetFontStyle(STT_Font *font, int style)
+{
+        TTF_SetFontStyle(font_pool[font->handle], style);
+}
+
+
+int  STT_GetFontOutline(const STT_Font *font)
+{
+        return TTF_GetFontOutline(font_pool[font->handle]);
+}
+
+
+void  STT_SetFontOutline(STT_Font *font, int outline)
+{
+        TTF_SetFontOutline(font_pool[font->handle], outline);
+}
+
+
+int  STT_GetFontHinting(const STT_Font *font)
+{
+        return TTF_GetFontHinting(font_pool[font->handle]);
+}
+
+void  STT_SetFontHinting(STT_Font *font, int hinting)
+{
+        TTF_SetFontHinting(font_pool[font->handle], hinting);
+}
+
+
+int  STT_SizeText(STT_Font *font, const char *text, int *w, int *h)
+{
+        return TTF_SizeText(font_pool[font->handle], text, w, h);        
+}
+
+
 
 SDL_Surface *  STT_RenderText_Solid(STT_Font *font,
 		                    const char *text, SDL_Color fg)
